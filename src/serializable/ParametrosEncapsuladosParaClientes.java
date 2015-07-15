@@ -55,20 +55,6 @@ public class ParametrosEncapsuladosParaClientes implements Serializable
                 return salida;
         }
 
-    public String getParametro(String clave)
-    {
-        String valor = "";
-        
-        for (ClaveValor cv : arrConParametros)
-        {
-            if(cv.getClave().equalsIgnoreCase(clave))
-            {
-                valor = cv.getValor();
-            }
-        }
-        return valor;
-    }
-
         
         
         

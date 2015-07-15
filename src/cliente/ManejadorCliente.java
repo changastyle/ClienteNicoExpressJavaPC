@@ -2,180 +2,186 @@ package cliente;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import serializable.ConjuntoDevuelto;
 import serializable.ConjuntoJugadas;
 import serializable.Jugada;
 import serializable.*;
 
 public class ManejadorCliente
-{
-    private ConjuntoJugadas conjuntoJugadasRealizadas ;
-    
+{   
     private final String direccionIPServer = XMLAPI.XMLHandler.leer("config.xml","direccionIP");
     private final int puertoServer = XMLAPI.XMLHandler.leerInt("config.xml","port");
     private Cliente cliente;
-    
-    
-    //IR SACANDO ESTO:
-    private int maximaCantidadJugadasPosible;
-    private final int numeroMaximo = 999;
-
-    
+    private ConjuntoJugadas conjuntoJugadas;
+    private ConjuntoDevuelto conjuntoDevuelto;
+    private ParametrosEncapsuladosParaClientes pepc;
     
     public ManejadorCliente()
-    {
+    {        
         System.out.println("DIRECCION IP DEL SERVER: " + direccionIPServer);
         System.out.println("PORT DEL SERVER: " +  puertoServer);
+
+        pepc = pedirParametrosAlServer();
         
-        //pedirParametrosAlServidor();
-        /*
-        conjuntoJugadasRealizadas = new ConjuntoJugadas();
-        maximaCantidadJugadasPosible = 5;
-        */
+        //A MODO DE PRUEBA, NO ANDARR CARGANDO COSAS:
+        conjuntoJugadas = new ConjuntoJugadas();
+            Jugada j1 = new Jugada("22",50);conjuntoJugadas.agregarJugada(j1);
+            Jugada j2 = new Jugada("88",50);conjuntoJugadas.agregarJugada(j2);
+            Jugada j3 = new Jugada("124",50);conjuntoJugadas.agregarJugada(j3);
+            Jugada j4 = new Jugada("21",50);conjuntoJugadas.agregarJugada(j4);
+            Jugada j5 = new Jugada("14",50);conjuntoJugadas.agregarJugada(j5);
+        enviarConjuntoJugadasAlServer(conjuntoJugadas);
+        
+        conjuntoDevuelto = new ConjuntoDevuelto();
+        System.out.println("EXTRACTO:" + conjuntoDevuelto.toString());
+        
     }
-    public ParametrosEncapsuladosParaClientes pedirParametrosAlServidor()
+    public ConjuntoDevuelto enviarConjuntoJugadasAlServer(ConjuntoJugadas conjuntoJugadas)
     {
-        ParametrosEncapsuladosParaClientes parametrosEncapsuladosParaClientes = null;
+        ConjuntoDevuelto conjuntoDevuelto = new ConjuntoDevuelto();
+        
         try
         {
-            //ME CONECTO AL SERVER, ESTABLESCO CANALES, ESPERO A QUE ESTEN LISTOS:
+            //ABRO CONEXION CON EL SERVER:
+            cliente = new Cliente(direccionIPServer, puertoServer);
+            cliente.start();
+            
+            //ENVIO BIT DE ESTADO DE LA CONEXION:
+            cliente.enviar(2);//ESTADO DE LA CONEXION.
+            cliente.join();
+            
+            //ENVIO LAS JUGADAS HECHAS:
+            cliente.enviar(conjuntoJugadas);
+            cliente.join();
+            
+            //RECIBO EL RESULTADO DE LAS MISMAS:
+            conjuntoDevuelto = (ConjuntoDevuelto) cliente.recibir();
+            cliente.join();
+            
+            //CIERRO CONEXION CON EL SERVER:
+            cliente.cerrar();
+            
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        
+        
+        
+        return conjuntoDevuelto;
+    }
+    public ParametrosEncapsuladosParaClientes pedirParametrosAlServer()
+    {
+        ParametrosEncapsuladosParaClientes pepcAUX = new ParametrosEncapsuladosParaClientes();
+        try
+        {
+            ///ABRO CONEXION CON EL SERVER Y ESTABLESCO CANALES I/O:
             cliente = new Cliente(direccionIPServer, puertoServer);
             cliente.start();
             cliente.join();
             
+            //ENVIO BIT DE ESTADO DE LA CONEXION:
+            cliente.enviar(1);  //ESTADO DE LA CONEXION.
+            cliente.join();
+            
             //RECIBO LOS PARAMETROS DEL SERVER:
-            parametrosEncapsuladosParaClientes = (ParametrosEncapsuladosParaClientes) cliente.recibir();
-            if (parametrosEncapsuladosParaClientes != null)
+            pepcAUX = (ParametrosEncapsuladosParaClientes) cliente.recibir();
+            cliente.join();
+            
+            if (pepcAUX != null)
             {
-                System.out.println("" +  parametrosEncapsuladosParaClientes.toString());
+                System.out.println("" +  pepcAUX.toString());
             }
+            
+            //CIERRO LA CONEXION CON EL SERVER:
+            cliente.cerrar();
         } 
         catch (Exception e)
         {
             System.out.println("ERROR: NO SE PUDO PEDIR PARAMETROS AL SERVIDOR.");
             e.printStackTrace();
         }
-        return parametrosEncapsuladosParaClientes;
+        return pepcAUX;
     }
-    public int menu()
+    public void agregarJugadaAlConjunto(Jugada jugada)
     {
-        int opcion = 0;
-        
-        Scanner scanner = new Scanner (System.in);
-        System.out.println("|------------------ OPCIONES -----------------|");
-        System.out.println("|1.Agregar JUGADA                             |");
-        System.out.println("|2.Enviar CONJUNTO                            |");
-        System.out.println("|99.cerrar el progama.                        |");
-        System.out.println("|---------------------------------------------|");
-        System.out.print("opcion:");
-        opcion = scanner.nextInt();
-        
-        return opcion;
+        this.conjuntoJugadas.agregarJugada(jugada);
     }
-    
-    public void seleccion()
+    public boolean enviarConjuntoJugadas()
     {
-        int opcion = menu();
-        
-        switch (opcion)
+        boolean envio = false;
+        try 
         {
-            case 1: 
-                
-                if(conjuntoJugadasRealizadas.getArrJugadas().size() < maximaCantidadJugadasPosible)
-                {
-                   Jugada jaux = pedirJugada();
-                   conjuntoJugadasRealizadas.agregarJugada(jaux); 
-                    System.out.println("" + mostrarConjuntoJugadas());
-                }
-                else
-                {
-                    System.out.println("YA TENES " + maximaCantidadJugadasPosible + " JUGADAS REALIZADAS");
-                }
-                
-            break;
-                
-            case 2: 
-                
-                int dineroApostado = pedirDineroParaElConjuntoJugadas();
-                //conjuntoJugadasRealizadas.setDineroApostado(dineroApostado);
-                
-                Cliente cliente = new Cliente(direccionIPServer , puertoServer);
-                cliente.start(); 
-                cliente.enviar(this.conjuntoJugadasRealizadas);
-                ConjuntoDevuelto conjuntoDevuelto = (ConjuntoDevuelto) cliente.recibir();
-                
-                System.out.println("CONJUNTO DEVUELTO = " + conjuntoDevuelto.toString() );
-                
-            break;
-                
-            /*case 3: 
+            ///ABRO CONEXION CON EL SERVER Y ESTABLESCO CANALES I/O:
+            cliente = new Cliente(direccionIPServer, puertoServer);
+            cliente.start();
+            cliente.join();
             
-            break;*/
-                
-            case 99: 
-                
-                System.exit(0);
-                
-            break;
-                
-            default:
-                
-                System.out.println("OPCION INVALIDA");
-                seleccion();
-                
-            break;
-        }
-    }
-    public Jugada pedirJugada()
-    {
-        Jugada jugada = new Jugada();
-        
-        jugada.setNumero("" + pedirNumero());
-
-        return jugada;
-    }
-    public int pedirNumero()
-    {
-        Scanner scanner = new Scanner(System.in);
-        
-        System.out.println("\n|--------------- A QUE NUMERO QUIERE JUGARLE ?? ------------------|");
-        System.out.print("|Numero: #");
-        int numero = scanner.nextInt();
-        
-        if(numero > numeroMaximo)
+            //ENVIO BIT DE ESTADO DE LA CONEXION:
+            cliente.enviar(2);//ESTADO DE LA CONEXION.
+            if(conjuntoJugadas != null)
+            {
+              cliente.enviar(conjuntoJugadas);  
+            }
+            
+            
+            
+            //RECIBO LOS PARAMETROS DEL SERVER:
+            conjuntoDevuelto = (ConjuntoDevuelto) cliente.recibir();
+            
+            if (conjuntoDevuelto != null)
+            {
+                System.out.println("" +  conjuntoDevuelto.toString());
+            }
+            
+            //CIERRO LA CONEXION CON EL SERVER:
+            cliente.cerrar();
+            envio = true;
+        } 
+        catch (Exception e) 
         {
-            System.out.println("|NUMERO MAXIMO = " + numeroMaximo);
-            numero = pedirNumero();
+            envio = false;
+            System.out.println("ERROR: Al enviar Conjunto Jugadas");
+            e.printStackTrace();
         }
-        
-        return numero;
+        return envio;
     }
-    public int pedirDineroParaElConjuntoJugadas()
-    {
-        int dinero = 0 ;
-        
-        System.out.print("INGRESE DINERO QUE DESEA APOSTAR: $" );
-        Scanner scanner = new Scanner(System.in);
-        dinero = scanner.nextInt();
-        
-        return dinero;
-    }
-    public String mostrarConjuntoJugadas()
-    {
-        String salida = "\n|--------------- HASTA EL MOMENTO ESTA CARGADO EL SIGUIENTE CONJUNTO   --------------|";
-        
-        for (Jugada jugada : conjuntoJugadasRealizadas.getArrJugadas())
-        {
-            salida += "\n|#" + jugada.getNumero() + "                                                                                 |";
-        }
-       
-        salida += "\n|------------------------------------------------------------------------------------|\n";
-        
-        return salida;
-    }
-
-    
     /*GYS*/
 
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public ConjuntoJugadas getConjuntoJugadas() {
+        return conjuntoJugadas;
+    }
+
+    public void setConjuntoJugadas(ConjuntoJugadas conjuntoJugadas) {
+        this.conjuntoJugadas = conjuntoJugadas;
+    }
+
+    public ConjuntoDevuelto getConjuntoDevuelto() {
+        return conjuntoDevuelto;
+    }
+
+    public void setConjuntoDevuelto(ConjuntoDevuelto conjuntoDevuelto) {
+        this.conjuntoDevuelto = conjuntoDevuelto;
+    }
+
+    public ParametrosEncapsuladosParaClientes getPepc() {
+        return pepc;
+    }
+
+    public void setPepc(ParametrosEncapsuladosParaClientes pepc) {
+        this.pepc = pepc;
+    }
+    
     
 }

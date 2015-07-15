@@ -1,4 +1,4 @@
-package cliente;
+ package cliente;
 
 public class MainCliente
 {
@@ -6,9 +6,9 @@ public class MainCliente
     {
         ManejadorCliente manejadorCliente = new ManejadorCliente();
         
-        VentanaCliente ventanaCliente = new VentanaCliente(manejadorCliente);
-        ventanaCliente.show(true);
-        
+       /* VentanaCliente ventanaCliente = new VentanaCliente(manejadorCliente);
+        ventanaCliente.show(true);*/
+       
     }
     
 }

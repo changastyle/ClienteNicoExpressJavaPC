@@ -15,6 +15,8 @@ class Cliente extends Thread
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
+    private ThreadRecibidor threadRecibidor;
+    private ThreadEnviador threadEnviador;
     
     public Cliente(String direccionIP, int puerto)
     {
@@ -52,9 +54,11 @@ class Cliente extends Thread
         {
             this.join();
 
-            ThreadEnviador threadEnviador = new ThreadEnviador(out,object);
+            threadEnviador = new ThreadEnviador(out,object);
             threadEnviador.start();
-        } catch (Exception e)
+            threadEnviador.join();
+        } 
+        catch (Exception e)
         {
             System.out.println("ERROR: OUT NO ESTABLECIDO " + e.toString());
         }
@@ -65,18 +69,22 @@ class Cliente extends Thread
     {
         Object objectoRecibido = null;
         
-        ThreadRecibidor threadRecibidor = new ThreadRecibidor(in);
-        threadRecibidor.start();
         try
         {
+            threadRecibidor = new ThreadRecibidor(in);
+            threadRecibidor.start();
             threadRecibidor.join();
+            objectoRecibido = threadRecibidor.getObjetoRecibido();
+            
+            if(objectoRecibido != null)
+            {
+                //System.out.println("" + objectoRecibido);
+            } 
         } 
         catch (InterruptedException ex)
         {
             System.out.println("ERROR: JOIN RECIBIR -> " + ex.toString() );
         }
-        
-        objectoRecibido = threadRecibidor.getObjetoRecibido();
         
         return objectoRecibido;
     }
@@ -130,6 +138,20 @@ class Cliente extends Thread
     public void setOut(ObjectOutputStream out)
     {
         this.out = out;
+    }
+
+    void cerrar() 
+    {
+        try 
+        {
+            out.close();
+            in.close();
+            socket.close();
+        } catch (Exception e) 
+        {
+            e.printStackTrace();
+        }
+   
     }
     
     

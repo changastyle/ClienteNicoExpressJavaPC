@@ -1,4 +1,4 @@
 <config>
-	<direccionIP>192.168.5.122</direccionIP>
+	<direccionIP>localhost</direccionIP>
 	<port>9999</port>
 </config>

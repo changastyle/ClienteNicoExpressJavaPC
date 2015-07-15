@@ -3,21 +3,32 @@ package cliente;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
 
 public class VentanaCliente extends javax.swing.JFrame implements ActionListener
 {
     ArrayList<JTextField> arrTextFields;
+    ArrayList<JSpinner> arrSpinners;
     ManejadorCliente manejadorCliente;
-    serializable.ParametrosEncapsuladosParaClientes parametrosEncapsuladosParaClientes;
+    //serializable.ParametrosEncapsuladosParaClientes parametrosEncapsuladosParaClientes;
     
     public VentanaCliente(ManejadorCliente manejadorCliente)
     {
         initComponents();
         
         this.manejadorCliente = manejadorCliente;
-        parametrosEncapsuladosParaClientes = manejadorCliente.pedirParametrosAlServidor();
+        //parametrosEncapsuladosParaClientes = manejadorCliente.pedirParametrosAlServidor();
+        
+        arrSpinners = new ArrayList<JSpinner>();
+        arrSpinners.add(jSpinner1);
+        arrSpinners.add(jSpinner2);
+        arrSpinners.add(jSpinner3);
+        arrSpinners.add(jSpinner4);
+        arrSpinners.add(jSpinner5);
         
         ajustarSpinners();
         
@@ -30,10 +41,16 @@ public class VentanaCliente extends javax.swing.JFrame implements ActionListener
         
         this.jButton1.addActionListener(this);
     }
+    
+    private void ajustarSpinners()
+    {
+        //this.getManejadorCliente().getConjuntoParametros();
+        ///ystem.out.println("min= " +this.getManejadorCliente().getConjuntoParametros().importeMinimoPorApuesta.getValor() );
+        
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents()
-    {
+    private void initComponents() {
 
         jTextField1 = new javax.swing.JTextField();
         jSpinner1 = new javax.swing.JSpinner();
@@ -202,9 +219,150 @@ public class VentanaCliente extends javax.swing.JFrame implements ActionListener
         }
     }
 
-    private void ajustarSpinners()
-    {
-        this.parametrosEncapsuladosParaClientes.getParametro();
+    /*GYS*/
+
+    public ArrayList<JTextField> getArrTextFields() {
+        return arrTextFields;
     }
 
+    public void setArrTextFields(ArrayList<JTextField> arrTextFields) {
+        this.arrTextFields = arrTextFields;
+    }
+
+    public ManejadorCliente getManejadorCliente() {
+        return manejadorCliente;
+    }
+
+    public void setManejadorCliente(ManejadorCliente manejadorCliente) {
+        this.manejadorCliente = manejadorCliente;
+    }
+
+    public JButton getjButton1() {
+        return jButton1;
+    }
+
+    public void setjButton1(JButton jButton1) {
+        this.jButton1 = jButton1;
+    }
+
+    public JLabel getjLabel1() {
+        return jLabel1;
+    }
+
+    public void setjLabel1(JLabel jLabel1) {
+        this.jLabel1 = jLabel1;
+    }
+
+    public JLabel getjLabel2() {
+        return jLabel2;
+    }
+
+    public void setjLabel2(JLabel jLabel2) {
+        this.jLabel2 = jLabel2;
+    }
+
+    public JLabel getjLabel3() {
+        return jLabel3;
+    }
+
+    public void setjLabel3(JLabel jLabel3) {
+        this.jLabel3 = jLabel3;
+    }
+
+    public JLabel getjLabel4() {
+        return jLabel4;
+    }
+
+    public void setjLabel4(JLabel jLabel4) {
+        this.jLabel4 = jLabel4;
+    }
+
+    public JLabel getjLabel5() {
+        return jLabel5;
+    }
+
+    public void setjLabel5(JLabel jLabel5) {
+        this.jLabel5 = jLabel5;
+    }
+
+    public JSpinner getjSpinner1() {
+        return jSpinner1;
+    }
+
+    public void setjSpinner1(JSpinner jSpinner1) {
+        this.jSpinner1 = jSpinner1;
+    }
+
+    public JSpinner getjSpinner2() {
+        return jSpinner2;
+    }
+
+    public void setjSpinner2(JSpinner jSpinner2) {
+        this.jSpinner2 = jSpinner2;
+    }
+
+    public JSpinner getjSpinner3() {
+        return jSpinner3;
+    }
+
+    public void setjSpinner3(JSpinner jSpinner3) {
+        this.jSpinner3 = jSpinner3;
+    }
+
+    public JSpinner getjSpinner4() {
+        return jSpinner4;
+    }
+
+    public void setjSpinner4(JSpinner jSpinner4) {
+        this.jSpinner4 = jSpinner4;
+    }
+
+    public JSpinner getjSpinner5() {
+        return jSpinner5;
+    }
+
+    public void setjSpinner5(JSpinner jSpinner5) {
+        this.jSpinner5 = jSpinner5;
+    }
+
+    public JTextField getjTextField1() {
+        return jTextField1;
+    }
+
+    public void setjTextField1(JTextField jTextField1) {
+        this.jTextField1 = jTextField1;
+    }
+
+    public JTextField getjTextField2() {
+        return jTextField2;
+    }
+
+    public void setjTextField2(JTextField jTextField2) {
+        this.jTextField2 = jTextField2;
+    }
+
+    public JTextField getjTextField3() {
+        return jTextField3;
+    }
+
+    public void setjTextField3(JTextField jTextField3) {
+        this.jTextField3 = jTextField3;
+    }
+
+    public JTextField getjTextField4() {
+        return jTextField4;
+    }
+
+    public void setjTextField4(JTextField jTextField4) {
+        this.jTextField4 = jTextField4;
+    }
+
+    public JTextField getjTextField5() {
+        return jTextField5;
+    }
+
+    public void setjTextField5(JTextField jTextField5) {
+        this.jTextField5 = jTextField5;
+    }
+    
 }
