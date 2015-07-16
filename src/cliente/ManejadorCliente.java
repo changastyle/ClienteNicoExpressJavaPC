@@ -25,18 +25,30 @@ public class ManejadorCliente
 
         pepc = pedirParametrosAlServer();
         
+        VentanaCliente ventanaCliente = new VentanaCliente(this);
+        
+        //enviarJugadasTest(); 
+    }
+    public void enviarJugadasTest()
+    {
         //A MODO DE PRUEBA, NO ANDARR CARGANDO COSAS:
         conjuntoJugadas = new ConjuntoJugadas();
-            Jugada j1 = new Jugada("1",50);conjuntoJugadas.agregarJugada(j1);
-            Jugada j2 = new Jugada("2",50);conjuntoJugadas.agregarJugada(j2);
-            Jugada j3 = new Jugada("3",50);conjuntoJugadas.agregarJugada(j3);
-            Jugada j4 = new Jugada("4",50);conjuntoJugadas.agregarJugada(j4);
-            Jugada j5 = new Jugada("5",50);conjuntoJugadas.agregarJugada(j5);
-        enviarConjuntoJugadasAlServer(conjuntoJugadas);
-        
+            Jugada j1 = new Jugada("1",50); conjuntoJugadas.agregarJugada(j1);
+            Jugada j2 = new Jugada("2",50); conjuntoJugadas.agregarJugada(j2);
+            Jugada j3 = new Jugada("3",50); conjuntoJugadas.agregarJugada(j3);
+            Jugada j4 = new Jugada("4",50); conjuntoJugadas.agregarJugada(j4);
+            Jugada j5 = new Jugada("5",50); conjuntoJugadas.agregarJugada(j5);
         conjuntoDevuelto = new ConjuntoDevuelto();
-        System.out.println("EXTRACTO:\n" + conjuntoDevuelto.toString());
+        conjuntoDevuelto = enviarConjuntoJugadasAlServer(conjuntoJugadas);
         
+        System.out.println("EXTRACTO:\n" + conjuntoDevuelto.toString());
+    }
+    public void enviarJugadas(ConjuntoJugadas conjuntoJugadas)
+    {
+        conjuntoDevuelto = new ConjuntoDevuelto();
+        conjuntoDevuelto = enviarConjuntoJugadasAlServer(conjuntoJugadas);
+        
+        System.out.println("EXTRACTO:\n" + conjuntoDevuelto.toString());
     }
     public ConjuntoDevuelto enviarConjuntoJugadasAlServer(ConjuntoJugadas conjuntoJugadas)
     {
@@ -90,7 +102,7 @@ public class ManejadorCliente
             
             if (pepcAUX != null)
             {
-                System.out.println("" +  pepcAUX.toString());
+                //System.out.println("" +  pepcAUX.toString());
             }
             
             //CIERRO LA CONEXION CON EL SERVER:
@@ -109,35 +121,36 @@ public class ManejadorCliente
     }
     
     /*GYS*/
-    public Cliente getCliente() {
+    public Cliente getCliente() 
+    {
         return cliente;
     }
-
-    public void setCliente(Cliente cliente) {
+    public void setCliente(Cliente cliente) 
+    {
         this.cliente = cliente;
     }
-
-    public ConjuntoJugadas getConjuntoJugadas() {
+    public ConjuntoJugadas getConjuntoJugadas() 
+    {
         return conjuntoJugadas;
     }
-
-    public void setConjuntoJugadas(ConjuntoJugadas conjuntoJugadas) {
+    public void setConjuntoJugadas(ConjuntoJugadas conjuntoJugadas)
+    {
         this.conjuntoJugadas = conjuntoJugadas;
     }
-
-    public ConjuntoDevuelto getConjuntoDevuelto() {
+    public ConjuntoDevuelto getConjuntoDevuelto() 
+    {
         return conjuntoDevuelto;
     }
-
-    public void setConjuntoDevuelto(ConjuntoDevuelto conjuntoDevuelto) {
+    public void setConjuntoDevuelto(ConjuntoDevuelto conjuntoDevuelto) 
+    {
         this.conjuntoDevuelto = conjuntoDevuelto;
     }
-
-    public ParametrosEncapsuladosParaClientes getPepc() {
+    public ParametrosEncapsuladosParaClientes getPepc() 
+    {
         return pepc;
     }
-
-    public void setPepc(ParametrosEncapsuladosParaClientes pepc) {
+    public void setPepc(ParametrosEncapsuladosParaClientes pepc) 
+    {
         this.pepc = pepc;
     }  
 }

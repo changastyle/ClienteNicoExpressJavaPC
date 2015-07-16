@@ -8,6 +8,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
+import serializable.ConjuntoJugadas;
+import serializable.Jugada;
+import serializable.ParametrosEncapsuladosParaClientes;
 
 public class VentanaCliente extends javax.swing.JFrame implements ActionListener
 {
@@ -40,17 +45,30 @@ public class VentanaCliente extends javax.swing.JFrame implements ActionListener
         arrTextFields.add(jTextField5);
         
         this.jButton1.addActionListener(this);
+        
+        this.setVisible(true);
     }
     
     private void ajustarSpinners()
     {
-        //this.getManejadorCliente().getConjuntoParametros();
-        ///ystem.out.println("min= " +this.getManejadorCliente().getConjuntoParametros().importeMinimoPorApuesta.getValor() );
+        ParametrosEncapsuladosParaClientes pepc = this.getManejadorCliente().getPepc();
+        
+            System.out.println("" +  pepc.toString());
+            
+            for(JSpinner spinner :arrSpinners)
+            {
+                int minimo = Integer.parseInt( pepc.getParametro("importeMinimoPorApuesta").getValor());
+                int maximo = Integer.parseInt( pepc.getParametro("importeMaximoPorApuesta").getValor());
+                int defaul = Integer.parseInt( pepc.getParametro("importePorDefault").getValor());
+                SpinnerModel model = new SpinnerNumberModel(defaul, minimo, maximo,  1);  
+                spinner.setModel(model);
+            }
         
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
         jTextField1 = new javax.swing.JTextField();
         jSpinner1 = new javax.swing.JSpinner();
@@ -73,33 +91,41 @@ public class VentanaCliente extends javax.swing.JFrame implements ActionListener
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setMaximumSize(null);
 
-        jTextField1.setText("jTextField1");
+        jTextField1.setText("2");
 
         jLabel1.setText("jLabel1");
         jLabel1.setMaximumSize(null);
 
-        jTextField2.setText("jTextField1");
+        jTextField2.setText("1");
+        jTextField2.setToolTipText("");
 
         jLabel2.setText("jLabel1");
         jLabel2.setMaximumSize(null);
 
-        jTextField3.setText("jTextField1");
+        jTextField3.setText("3");
 
         jLabel3.setText("jLabel1");
         jLabel3.setMaximumSize(null);
 
-        jTextField4.setText("jTextField1");
+        jTextField4.setText("4");
 
         jLabel4.setText("jLabel1");
         jLabel4.setMaximumSize(null);
 
-        jTextField5.setText("jTextField1");
+        jTextField5.setText("5");
 
         jLabel5.setText("jLabel1");
         jLabel5.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jLabel5.setMaximumSize(null);
 
         jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -175,6 +201,49 @@ public class VentanaCliente extends javax.swing.JFrame implements ActionListener
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
+    {//GEN-HEADEREND:event_jButton1ActionPerformed
+        if(validado())
+        {
+            ConjuntoJugadas conjuntoJugadas = new ConjuntoJugadas();
+            for(int i = 0 ; i < this.getArrTextFields().size(); i++)
+            {
+                
+                int numero = Integer.parseInt(this.getArrTextFields().get(i).getText());
+                int dinero = Integer.parseInt(this.arrSpinners.get(i).getValue().toString());
+                
+                Jugada j = new Jugada( "" + numero, dinero);
+                conjuntoJugadas.agregarJugada(j);
+                System.out.println( "" + numero   + " -> "+ dinero );
+            }
+            this.manejadorCliente.enviarJugadas(conjuntoJugadas);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    public boolean validado()
+    {
+        boolean sonTodosNumeros = true;
+        int contador = 1 ;
+        for(JTextField textField : arrTextFields)
+        {
+            int numero = 0;
+            try
+            {
+                numero = Integer.parseInt(textField.getText());
+            }
+            catch (Exception ex)
+            {
+                sonTodosNumeros = false;
+                JOptionPane.showMessageDialog(null, "NO ES UN NUMERO EL CAMPO N°: " + contador);
+            }
+            contador ++;
+        }
+        return sonTodosNumeros;
+    }
+    
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
@@ -197,26 +266,6 @@ public class VentanaCliente extends javax.swing.JFrame implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        if(e.getSource() == jButton1)
-        {
-            boolean sonTodosNumeros = true;
-            int contador = 1 ;
-            for(JTextField textField : arrTextFields)
-            {
-                int numero = 0;
-                try
-                {
-                    numero = Integer.parseInt(textField.getText());
-                    
-                }
-                catch (Exception ex)
-                {
-                    sonTodosNumeros = false;
-                    JOptionPane.showMessageDialog(null, "NO ES UN NUMERO EL CAMPO N°: " + contador);
-                }
-                contador ++;
-            }
-        }
     }
 
     /*GYS*/
