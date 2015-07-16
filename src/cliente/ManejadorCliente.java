@@ -27,15 +27,15 @@ public class ManejadorCliente
         
         //A MODO DE PRUEBA, NO ANDARR CARGANDO COSAS:
         conjuntoJugadas = new ConjuntoJugadas();
-            Jugada j1 = new Jugada("22",50);conjuntoJugadas.agregarJugada(j1);
-            Jugada j2 = new Jugada("88",50);conjuntoJugadas.agregarJugada(j2);
-            Jugada j3 = new Jugada("124",50);conjuntoJugadas.agregarJugada(j3);
-            Jugada j4 = new Jugada("21",50);conjuntoJugadas.agregarJugada(j4);
-            Jugada j5 = new Jugada("14",50);conjuntoJugadas.agregarJugada(j5);
+            Jugada j1 = new Jugada("1",50);conjuntoJugadas.agregarJugada(j1);
+            Jugada j2 = new Jugada("2",50);conjuntoJugadas.agregarJugada(j2);
+            Jugada j3 = new Jugada("3",50);conjuntoJugadas.agregarJugada(j3);
+            Jugada j4 = new Jugada("4",50);conjuntoJugadas.agregarJugada(j4);
+            Jugada j5 = new Jugada("5",50);conjuntoJugadas.agregarJugada(j5);
         enviarConjuntoJugadasAlServer(conjuntoJugadas);
         
         conjuntoDevuelto = new ConjuntoDevuelto();
-        System.out.println("EXTRACTO:" + conjuntoDevuelto.toString());
+        System.out.println("EXTRACTO:\n" + conjuntoDevuelto.toString());
         
     }
     public ConjuntoDevuelto enviarConjuntoJugadasAlServer(ConjuntoJugadas conjuntoJugadas)
@@ -68,9 +68,6 @@ public class ManejadorCliente
         {
             e.printStackTrace();
         }
-        
-        
-        
         return conjuntoDevuelto;
     }
     public ParametrosEncapsuladosParaClientes pedirParametrosAlServer()
@@ -110,47 +107,8 @@ public class ManejadorCliente
     {
         this.conjuntoJugadas.agregarJugada(jugada);
     }
-    public boolean enviarConjuntoJugadas()
-    {
-        boolean envio = false;
-        try 
-        {
-            ///ABRO CONEXION CON EL SERVER Y ESTABLESCO CANALES I/O:
-            cliente = new Cliente(direccionIPServer, puertoServer);
-            cliente.start();
-            cliente.join();
-            
-            //ENVIO BIT DE ESTADO DE LA CONEXION:
-            cliente.enviar(2);//ESTADO DE LA CONEXION.
-            if(conjuntoJugadas != null)
-            {
-              cliente.enviar(conjuntoJugadas);  
-            }
-            
-            
-            
-            //RECIBO LOS PARAMETROS DEL SERVER:
-            conjuntoDevuelto = (ConjuntoDevuelto) cliente.recibir();
-            
-            if (conjuntoDevuelto != null)
-            {
-                System.out.println("" +  conjuntoDevuelto.toString());
-            }
-            
-            //CIERRO LA CONEXION CON EL SERVER:
-            cliente.cerrar();
-            envio = true;
-        } 
-        catch (Exception e) 
-        {
-            envio = false;
-            System.out.println("ERROR: Al enviar Conjunto Jugadas");
-            e.printStackTrace();
-        }
-        return envio;
-    }
+    
     /*GYS*/
-
     public Cliente getCliente() {
         return cliente;
     }
@@ -181,7 +139,5 @@ public class ManejadorCliente
 
     public void setPepc(ParametrosEncapsuladosParaClientes pepc) {
         this.pepc = pepc;
-    }
-    
-    
+    }  
 }
